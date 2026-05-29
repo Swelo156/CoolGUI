@@ -1,9 +1,7 @@
-print("✅ COOLGUI TEST SCRIPT LOADED SUCCESSFULLY")
-
+print("COOLGUI TEST 123")
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "CoolGUI",
-    Text = "Test script works! You are NOT cool",
-    Duration = 10
+    Text = "If you see this notification, it works!",
+    Duration = 8
 })
-
-warn("If you see this in console, the script is running")
+warn("COOLGUI TEST SCRIPT RUNNING")
