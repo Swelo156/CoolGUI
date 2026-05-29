@@ -1,180 +1,75 @@
--- CoolGUI v5 - Admin Style Cheat
-print("✅ CoolGUI v5 Admin Cheat Loaded")
+-- CoolGUI Simple Test v6
+print("✅ CoolGUI Test v6 Loaded")
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local StarterGui = game:GetService("StarterGui")
-
-local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
-
-local Settings = {
-    Fly = false,
-    FlySpeed = 80,
-    Speed = true,
-    WalkSpeed = 140,
-    JumpPower = 250,
-    Godmode = false,
-    ESP = true,
-    KillAura = false,
-    Fling = false,
-}
-
--- Notification
-StarterGui:SetCore("SendNotification", {
-    Title = "CoolGUI v5",
-    Text = "Press RightShift to open Admin Menu",
-    Duration = 8
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "CoolGUI",
+    Text = "Script loaded! Press RightShift",
+    Duration = 10
 })
 
--- =============== UI ===============
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "CoolGUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = LocalPlayer.PlayerGui
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 320, 0, 520)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -260)
-MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
-MainFrame.BorderSizePixel = 0
-MainFrame.Visible = false
-MainFrame.Parent = ScreenGui
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+local LocalPlayer = Players.LocalPlayer
+
+local FlyEnabled = false
+
+-- Simple UI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 300, 0, 200)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.Visible = false
+Frame.Parent = ScreenGui
 
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
-Title.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-Title.Text = "COOLGUI ADMIN v5"
+Title.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Title.Text = "COOLGUI"
 Title.TextColor3 = Color3.new(1,1,1)
 Title.TextScaled = true
-Title.Font = Enum.Font.GothamBold
-Title.Parent = MainFrame
-Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 10)
+Title.Parent = Frame
 
-local function CreateButton(text, color, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 45)
-    btn.Position = UDim2.new(0, 10, 0, 0)
-    btn.BackgroundColor3 = color
-    btn.Text = text
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.Font = Enum.Font.GothamBold
-    btn.TextScaled = true
-    btn.Parent = MainFrame
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
-    
-    btn.MouseButton1Click:Connect(callback)
-    return btn
-end
+local FlyButton = Instance.new("TextButton")
+FlyButton.Size = UDim2.new(0.8, 0, 0, 50)
+FlyButton.Position = UDim2.new(0.1, 0, 0.4, 0)
+FlyButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
+FlyButton.Text = "Fly: OFF"
+FlyButton.TextColor3 = Color3.new(1,1,1)
+FlyButton.TextScaled = true
+FlyButton.Parent = Frame
 
-local yOffset = 60
-
--- Toggles
-local function CreateToggle(name, default, callback)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, -20, 0, 50)
-    frame.Position = UDim2.new(0, 10, 0, yOffset)
-    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-    frame.Parent = MainFrame
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
-    
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.6, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.Text = "  " .. name
-    label.TextColor3 = Color3.new(1,1,1)
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Font = Enum.Font.Gotham
-    label.TextScaled = true
-    label.Parent = frame
-
-    local toggleBtn = Instance.new("TextButton")
-    toggleBtn.Size = UDim2.new(0.35, 0, 0.7, 0)
-    toggleBtn.Position = UDim2.new(0.62, 0, 0.15, 0)
-    toggleBtn.BackgroundColor3 = default and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(170, 0, 0)
-    toggleBtn.Text = default and "ON" or "OFF"
-    toggleBtn.TextColor3 = Color3.new(1,1,1)
-    toggleBtn.Font = Enum.Font.GothamBold
-    toggleBtn.TextScaled = true
-    toggleBtn.Parent = frame
-    Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 6)
-
-    toggleBtn.MouseButton1Click:Connect(function()
-        default = not default
-        toggleBtn.BackgroundColor3 = default and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(170, 0, 0)
-        toggleBtn.Text = default and "ON" or "OFF"
-        callback(default)
-    end)
-    
-    yOffset += 55
-end
-
-CreateToggle("Speed", true, function(v) Settings.Speed = v end)
-CreateToggle("Fly", false, function(v) Settings.Fly = v end)
-CreateToggle("Godmode", false, function(v) Settings.Godmode = v end)
-CreateToggle("ESP", true, function(v) Settings.ESP = v end)
-CreateToggle("Kill Aura", false, function(v) Settings.KillAura = v end)
-CreateToggle("Fling Mode", false, function(v) Settings.Fling = v end)
-
--- Quick Actions
-yOffset += 10
-CreateButton("Kill Nearest", Color3.fromRGB(140, 0, 0), function()
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-            p.Character.Humanoid.Health = 0
-            break
-        end
-    end
+FlyButton.MouseButton1Click:Connect(function()
+    FlyEnabled = not FlyEnabled
+    FlyButton.Text = "Fly: " .. (FlyEnabled and "ON" or "OFF")
+    FlyButton.BackgroundColor3 = FlyEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(170, 0, 0)
 end)
 
-CreateButton("Fling Nearest", Color3.fromRGB(180, 100, 0), function()
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-            local bv = Instance.new("BodyVelocity")
-            bv.Velocity = Vector3.new(math.random(-100,100), 80, math.random(-100,100))
-            bv.MaxForce = Vector3.new(1e5,1e5,1e5)
-            bv.Parent = p.Character.HumanoidRootPart
-            game:GetService("Debris"):AddItem(bv, 0.5)
-            break
-        end
-    end
-end)
-
--- Keybind
+-- RightShift to open menu
 UserInputService.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.RightShift then
-        MainFrame.Visible = not MainFrame.Visible
+        Frame.Visible = not Frame.Visible
     end
 end)
 
--- Main Loop
+-- Fly
 RunService.RenderStepped:Connect(function()
-    if not LocalPlayer.Character then return end
-    local hum = LocalPlayer.Character:FindFirstChild("Humanoid")
-    local root = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-
-    if hum then
-        if Settings.Speed then
-            hum.WalkSpeed = Settings.WalkSpeed
-            hum.JumpPower = Settings.JumpPower
-        end
-        if Settings.Godmode then
-            hum.MaxHealth = math.huge
-            hum.Health = math.huge
-        end
-    end
-
-    if Settings.Fly and root then
+    if FlyEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local root = LocalPlayer.Character.HumanoidRootPart
         local move = Vector3.new()
-        local cam = Camera.CFrame
+        local cam = workspace.CurrentCamera.CFrame
+
         if UserInputService:IsKeyDown(Enum.KeyCode.W) then move += cam.LookVector end
         if UserInputService:IsKeyDown(Enum.KeyCode.S) then move -= cam.LookVector end
         if UserInputService:IsKeyDown(Enum.KeyCode.A) then move -= cam.RightVector end
         if UserInputService:IsKeyDown(Enum.KeyCode.D) then move += cam.RightVector end
-        root.Velocity = move * Settings.FlySpeed
+
+        root.Velocity = move * 70
     end
 end)
 
-print("✅ RightShift to open menu")
+print("✅ Press RightShift to open menu")
